@@ -72,7 +72,7 @@ export default function ShareForm() {
           <div className="space-y-2 break-all">
             <p className="text-sm font-medium text-slate-800">Share this link with your doctor:</p>
             <p className="text-sm bg-slate-100 rounded p-2 text-slate-700">{url}</p>
-            <button onClick={() => navigator.clipboard.writeText(url)} className="text-sm border rounded px-3 py-1">Copy link</button>
+            <button onClick={() => navigator.clipboard.writeText(url)} className="text-sm border rounded px-3 py-1 text-slate-700 hover:bg-slate-100">Copy link</button>
             <p className="text-xs text-amber-700">Shown only once. We store only a hash of this link.</p>
           </div>
         </div>
