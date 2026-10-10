@@ -43,7 +43,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     db.from("allergies").select("substance, reaction, severity").eq("patient_id", pid),
     db.from("conditions").select("name, diagnosed_on, category").eq("patient_id", pid).in("category", scopes),
     db.from("medications").select("generic_name, brand_name, dose, frequency, start_date, end_date, category").eq("patient_id", pid),
-    db.from("events").select("id, type, category, title, doctor_name, provider, event_date, notes, supersedes_id")
+    db.from("events").select("id, type, category, title, doctor_name, provider, event_date, notes, supersedes_id, file_path")
       .eq("patient_id", pid).in("category", scopes)
       .order("event_date", { ascending: false }).order("created_at", { ascending: false }),
     db.from("lab_results").select("test_code, value, unit, tested_on, category").eq("patient_id", pid).in("category", scopes),
@@ -56,7 +56,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   if (body.since && !isNaN(Date.parse(body.since))) { since = new Date(body.since); basis = "chosen"; }
   else if (prev) { since = new Date(prev.accessed_at); basis = "last_view"; }
   else { since = new Date(now.getTime() - 180 * 86400000); basis = "default"; }
-
+  // 6. Short-lived signed links for attached files in shared categories only
+  const paths = (events ?? []).filter(e => e.file_path).map(e => e.file_path as string);
+  const fileUrls: Record<string, string> = {};
+  if (paths.length) {
+    const { data: signed } = await db.storage
+      .from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!)
+      .createSignedUrls(paths, 300);
+    for (const s of signed ?? []) {
+      if (s.path && s.signedUrl) fileUrls[s.path] = s.signedUrl;
+    }
+  }
   const visitDates = [...new Set((events ?? [])
     .filter(e => ["prescription", "diagnosis", "visit"].includes(e.type))
     .map(e => e.event_date))];
@@ -75,6 +85,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
     },
     tests: testReviewStatus(labs ?? [], rules ?? [], now),
     timeline: events ?? [],
+    fileUrls,
     scopes, expiresAt: share.expires_at, visitDates,
   });
 }

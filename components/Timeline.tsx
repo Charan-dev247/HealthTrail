@@ -1,7 +1,7 @@
 type Event = {
   id: string; type: string; category: string; title: string;
   doctor_name: string | null; provider: string | null;
-  event_date: string; notes: string | null; supersedes_id: string | null;
+  event_date: string; notes: string | null; supersedes_id: string | null; file_path?: string | null;
 };
 
 const badge: Record<string, string> = {
@@ -12,13 +12,14 @@ const badge: Record<string, string> = {
   scan: "bg-slate-200 text-slate-700",
 };
 
-export default function Timeline({ events }: { events: Event[] }) {
+export default function Timeline({ events, fileUrls = {} }: { events: Event[]; fileUrls?: Record<string, string> }) {
   const supersededIds = new Set(events.map(e => e.supersedes_id).filter(Boolean));
 
   return (
     <ol className="relative border-l-2 border-slate-200 ml-3 space-y-5">
       {events.map(e => {
         const superseded = supersededIds.has(e.id);
+        const url = e.file_path ? fileUrls[e.file_path] : undefined;
         return (
           <li key={e.id} className="ml-6">
             <span className="absolute -left-[9px] mt-1.5 h-4 w-4 rounded-full bg-teal-500 border-2 border-white" />
@@ -35,6 +36,11 @@ export default function Timeline({ events }: { events: Event[] }) {
                 <p className="text-sm text-slate-500">{[e.doctor_name, e.provider].filter(Boolean).join(" · ")}</p>
               )}
               {e.notes && <p className="text-sm text-slate-700 mt-1">{e.notes}</p>}
+              {url && (
+                <a href={url} target="_blank" className="inline-block mt-2 text-sm text-teal-700 underline">
+                  📎 View attached report (link valid 5 min)
+                </a>
+              )}
             </div>
           </li>
         );

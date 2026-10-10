@@ -195,7 +195,7 @@ export default function DoctorView() {
         {/* Timeline (only shared categories) */}
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">Timeline (shared categories only)</h2>
-          <Timeline events={data.timeline} />
+          <Timeline events={data.timeline} fileUrls={data.fileUrls} />
         </section>
 
         {error && <p className="text-red-600 font-medium">{error}</p>}
