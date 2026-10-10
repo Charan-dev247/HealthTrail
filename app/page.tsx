@@ -245,12 +245,12 @@ export default function Home() {
         <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-slate-900 shadow-xl">
           <div className="grid gap-8 p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
             <div>
-              <h2 className="mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                Take HealthTrail for a test drive.
+              <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                Explore your medical history.
               </h2>
               <p className="mt-3 max-w-xl leading-7 text-slate-300">
-                Explore the platform using the demo patient account and see
-                how medical history and controlled sharing work.
+                See how medical records, health history, and secure sharing work
+                together in one place.
               </p>
 
               <div className="mt-6 space-y-3">
@@ -271,13 +271,13 @@ export default function Home() {
 
             <div className="flex flex-col gap-3 lg:min-w-48">
               <Link
-                href="/login"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-500 px-6 py-3.5 font-semibold text-white transition hover:bg-teal-400"
+                href="/login?demo=true"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-500 px-6 py-3.5 font-semibold text-slate-950 transition hover:bg-teal-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300"
               >
                 Open demo <span aria-hidden="true">→</span>
               </Link>
               <p className="text-center text-xs leading-5 text-slate-400">
-                Use the provided demo credentials
+                Credentials will be filled in automatically.
               </p>
             </div>
           </div>
@@ -296,9 +296,8 @@ export default function Home() {
             </p>
           </div>
           <p className="max-w-2xl text-xs leading-6 text-slate-500 sm:text-right">
-            All patient data is simulated.
-            Safety checks and review intervals are illustrative, not clinical
-            advice. Clinician identity is self-reported and not verified.
+            Your health records, organized and accessible in one place.
+            Health information should be reviewed with a qualified clinician.
           </p>
         </div>
       </footer>

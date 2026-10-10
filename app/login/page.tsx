@@ -1,12 +1,15 @@
 
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function LoginForm() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isDemo = searchParams.get("demo") === "true";
+
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,16 +17,31 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (isDemo) {
+      setMode("signin");
+      setEmail("ravi@test.com");
+      setPassword("ravi123");
+    }
+  }, [isDemo]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     const { error } =
       mode === "signup"
-        ? await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName } } })
+        ? await supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: fullName } },
+          })
         : await supabase.auth.signInWithPassword({ email, password });
+
     setLoading(false);
     if (error) return setError(error.message);
+
     router.push("/dashboard");
     router.refresh();
   }
@@ -63,6 +81,12 @@ export default function LoginPage() {
                 : "Create your account to start organizing your medical history."}
             </p>
           </div>
+
+          {isDemo && mode === "signin" && (
+            <div className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-800">
+              Demo credentials have been filled in. Click Sign in to continue.
+            </div>
+          )}
 
           {mode === "signup" && (
             <div className="space-y-2">
@@ -120,6 +144,7 @@ export default function LoginPage() {
           )}
 
           <button
+            type="submit"
             disabled={loading}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-5 py-3.5 font-semibold text-white shadow-md shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
           >
@@ -141,7 +166,16 @@ export default function LoginPage() {
             <button
               type="button"
               className="font-semibold text-teal-700 underline-offset-4 transition hover:text-teal-900 hover:underline"
-              onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+              onClick={() => {
+                const nextMode = mode === "signin" ? "signup" : "signin";
+                setMode(nextMode);
+                setError("");
+
+                if (nextMode === "signup" && isDemo) {
+                  setEmail("");
+                  setPassword("");
+                }
+              }}
             >
               {mode === "signin" ? "Create an account" : "Sign in instead"}
             </button>
@@ -164,5 +198,19 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-slate-50">
+          <p className="text-sm text-slate-500">Loading sign-in...</p>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
