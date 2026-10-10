@@ -6,6 +6,7 @@ import Timeline from "@/components/Timeline";
 import SignOutButton from "@/components/SignOutButton";
 import EmergencyQR from "@/components/EmergencyQR";
 import AddRecordForm from "@/components/AddRecordForm";
+import ProfileEditor from "@/components/ProfileEditor";
 
 export default async function Dashboard() {
   await connection();
@@ -94,7 +95,8 @@ export default async function Dashboard() {
               </p>
             )) : <p className="text-sm text-slate-500">None recorded</p>}
           </section>
-
+          
+          {profile && <ProfileEditor profile={profile} allergies={allergies ?? []} />}
           <EmergencyQR token={profile?.emergency_token} />
         </aside>
 
