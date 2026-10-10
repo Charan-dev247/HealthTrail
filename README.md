@@ -2,7 +2,7 @@
 
 > VCareMed doesn't just store medical records. It shows **what changed**, **what the next doctor needs to know**, and **exactly who was allowed to see it**.
 
-**Live demo:** : https://health-trail-81xcdytke-charan-2d53.vercel.app/
+**Live demo:** : https://health-trail.vercel.app/
 
 **Demo video:** : https://drive.google.com/file/d/1zS7BxtBLVs0lWmGbOwgd2kY0-pFe1Tyu/view?usp=sharing
 
