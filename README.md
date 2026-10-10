@@ -2,9 +2,8 @@
 
 > VCareMed doesn't just store medical records. It shows **what changed**, **what the next doctor needs to know**, and **exactly who was allowed to see it**.
 
-**Live demo:** TODO: https://health-trail-b9v51s9hj-charan-2d53.vercel.app/
-**Demo video:** TODO: link (or `/demo/VCareMed-demo.mp4` in this repo)
-**Demo login:** `ravi@test.com` / `ravi123`
+**Live demo:** : https://health-trail-81xcdytke-charan-2d53.vercel.app/
+**Demo video:** : https://drive.google.com/file/d/1zS7BxtBLVs0lWmGbOwgd2kY0-pFe1Tyu/view?usp=sharing
 
 **Domain:** HealthTech
 **Problem statement:** *Lost in Transit: Fragmented Medical Records and Repeated Care Across Providers*
@@ -173,4 +172,7 @@ supabase/seed.sql             Demo patient data
 - Offline emergency card with digitally signed data
 
 ## Team
-TODO: names and roles
+Charan Sai S - CS24B2026
+Varshith Reddy D - CS24B2027
+R.K Vamsi - CS24B2034
+Shanmukha Sai - CS24B2020
