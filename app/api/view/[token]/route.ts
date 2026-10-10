@@ -38,7 +38,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
 
   // 4. Fetch ONLY the allowed categories (allergies + current meds always shown for safety)
   const [{ data: profile }, { data: allergies }, { data: conditions }, { data: meds },
-         { data: events }, { data: labs }, { data: rules }] = await Promise.all([
+         { data: allEvents }, { data: labs }, { data: rules }, { data: removals }] = await Promise.all([
     db.from("profiles").select("full_name, dob, blood_group").eq("id", pid).single(),
     db.from("allergies").select("substance, reaction, severity").eq("patient_id", pid),
     db.from("conditions").select("name, diagnosed_on, category").eq("patient_id", pid).in("category", scopes),
@@ -48,7 +48,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       .order("event_date", { ascending: false }).order("created_at", { ascending: false }),
     db.from("lab_results").select("test_code, value, unit, tested_on, category").eq("patient_id", pid).in("category", scopes),
     db.from("test_review_rules").select("*"),
+    db.from("event_removals").select("event_id").eq("patient_id", pid),
   ]);
+
+  // Entries the patient removed are not shown to doctors
+  const removedIds = new Set((removals ?? []).map(r => r.event_id));
+  const events = (allEvents ?? []).filter(e => !removedIds.has(e.id));
 
   // 5. Decide the comparison point
   let since: Date;
@@ -56,8 +61,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
   if (body.since && !isNaN(Date.parse(body.since))) { since = new Date(body.since); basis = "chosen"; }
   else if (prev) { since = new Date(prev.accessed_at); basis = "last_view"; }
   else { since = new Date(now.getTime() - 180 * 86400000); basis = "default"; }
+
   // 6. Short-lived signed links for attached files in shared categories only
-  const paths = (events ?? []).filter(e => e.file_path).map(e => e.file_path as string);
+  const paths = events.filter(e => e.file_path).map(e => e.file_path as string);
   const fileUrls: Record<string, string> = {};
   if (paths.length) {
     const { data: signed } = await db.storage
@@ -67,7 +73,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       if (s.path && s.signedUrl) fileUrls[s.path] = s.signedUrl;
     }
   }
-  const visitDates = [...new Set((events ?? [])
+
+  const visitDates = [...new Set(events
     .filter(e => ["prescription", "diagnosis", "visit"].includes(e.type))
     .map(e => e.event_date))];
 
@@ -84,7 +91,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ token: 
       newConditions: (conditions ?? []).filter(c => c.diagnosed_on && toDate(c.diagnosed_on) > since),
     },
     tests: testReviewStatus(labs ?? [], rules ?? [], now),
-    timeline: events ?? [],
+    timeline: events,
     fileUrls,
     scopes, expiresAt: share.expires_at, visitDates,
   });

@@ -1,4 +1,5 @@
 import CorrectEntry from "@/components/CorrectEntry";
+import RemoveEntry from "@/components/RemoveEntry";
 
 type Event = {
   id: string; type: string; category: string; title: string;
@@ -18,6 +19,8 @@ export default function Timeline({ events, fileUrls = {}, canCorrect = false }: 
   events: Event[]; fileUrls?: Record<string, string>; canCorrect?: boolean;
 }) {
   const supersededIds = new Set(events.map(e => e.supersedes_id).filter(Boolean));
+
+  if (!events.length) return <p className="text-sm text-slate-500">No records yet.</p>;
 
   return (
     <ol className="relative border-l-2 border-slate-200 ml-3 space-y-5">
@@ -45,7 +48,12 @@ export default function Timeline({ events, fileUrls = {}, canCorrect = false }: 
                   📎 View attached report (link valid 5 min)
                 </a>
               )}
-              {canCorrect && !superseded && <CorrectEntry event={e} />}
+              {canCorrect && !superseded && (
+                <div>
+                  <CorrectEntry event={e} />
+                  <RemoveEntry eventId={e.id} type={e.type} />
+                </div>
+              )}
             </div>
           </li>
         );

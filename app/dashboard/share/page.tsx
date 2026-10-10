@@ -21,7 +21,7 @@ export default async function SharePage() {
   if (!user) redirect("/login");
 
   const [{ data: shares }, { data: logs }] = await Promise.all([
-    supabase.from("shares").select("id, doctor_label, scopes, expires_at, revoked_at, created_at").order("created_at", { ascending: false }),
+    supabase.from("shares").select("id, doctor_label, scopes, expires_at, revoked_at, created_at").is("revoked_at", null).order("created_at", { ascending: false }),
     supabase.from("access_logs").select("*").order("accessed_at", { ascending: false }).limit(50),
   ]);
 

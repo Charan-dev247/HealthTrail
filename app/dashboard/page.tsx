@@ -15,7 +15,7 @@ export default async function Dashboard() {
 
   const [
     { data: profile }, { data: events }, { data: meds }, { data: conditions },
-    { data: allergies }, { data: emergencyLogs }, { data: rules },
+    { data: allergies }, { data: emergencyLogs }, { data: rules }, { data: removals },
   ] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("events").select("*").order("event_date", { ascending: false }).order("created_at", { ascending: false }),
@@ -26,10 +26,15 @@ export default async function Dashboard() {
       .in("access_type", ["emergency_basic", "break_glass"])
       .order("accessed_at", { ascending: false }).limit(1),
     supabase.from("test_review_rules").select("test_code, test_name").order("test_name"),
+    supabase.from("event_removals").select("event_id"),
   ]);
 
+  // Hide removed entries (the removal itself stays in the audit table)
+  const removedIds = new Set((removals ?? []).map(r => r.event_id));
+  const visibleEvents = (events ?? []).filter(e => !removedIds.has(e.id));
+
   // Short-lived signed links for attached files (bucket is private)
-  const paths = (events ?? []).filter(e => e.file_path).map(e => e.file_path as string);
+  const paths = visibleEvents.filter(e => e.file_path).map(e => e.file_path as string);
   const fileUrls: Record<string, string> = {};
   if (paths.length) {
     const { data: signed } = await supabase.storage
@@ -101,7 +106,7 @@ export default async function Dashboard() {
             rules={rules ?? []}
           />
           <h2 className="text-lg font-bold text-slate-800 mb-4">Health timeline</h2>
-          <Timeline events={events ?? []} fileUrls={fileUrls} canCorrect />
+          <Timeline events={visibleEvents} fileUrls={fileUrls} canCorrect />
         </section>
       </div>
     </main>
