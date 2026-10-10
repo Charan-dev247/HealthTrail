@@ -30,7 +30,11 @@ export type Warning = { kind: "allergy" | "interaction" | "duplicate"; message: 
 const norm = (s: string) => s.trim().toLowerCase();
 
 export function toGeneric(nameOrBrand: string) {
-  return BRAND_TO_GENERIC[norm(nameOrBrand)] ?? null;
+  const n = norm(nameOrBrand);
+  if (BRAND_TO_GENERIC[n]) return BRAND_TO_GENERIC[n];
+  // typed a generic name in the brand box → still recognise it
+  const generic = Object.values(BRAND_TO_GENERIC).find(g => norm(g) === n);
+  return generic ?? null;
 }
 
 export function checkMeds(
