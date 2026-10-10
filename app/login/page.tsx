@@ -54,10 +54,10 @@ function LoginForm() {
       <div className="relative w-full max-w-md">
         <a href="/" className="mb-8 flex items-center justify-center gap-3">
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-700 text-2xl font-bold text-white shadow-lg shadow-teal-900/15">
-            H
+            vC
           </span>
           <span className="text-2xl font-bold tracking-tight text-slate-900">
-            Health<span className="text-teal-700">Trail</span>
+            VCare<span className="text-teal-700">Med</span>
           </span>
         </a>
 

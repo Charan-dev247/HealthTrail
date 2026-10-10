@@ -20,10 +20,10 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
           <Link href="/" className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-700 text-xl font-bold text-white shadow-sm">
-              H
+              vC
             </span>
             <span className="text-xl font-bold tracking-tight text-slate-900">
-              Health<span className="text-teal-700">Trail</span>
+              VCare<span className="text-teal-700">Med</span>
             </span>
           </Link>
 
@@ -109,7 +109,7 @@ export default function Home() {
               <div className="flex items-center justify-between border-b border-slate-100 pb-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-100 text-lg font-bold text-teal-800">
-                    H
+                    vC
                   </div>
                   <div>
                     <p className="font-bold text-slate-900">Health overview</p>
@@ -289,7 +289,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="font-bold tracking-tight text-slate-800">
-              Health<span className="text-teal-700">Trail</span>
+              VCare<span className="text-teal-700">Med</span>
             </p>
             <p className="mt-1 text-xs text-slate-500">
               A platform for clearer, more transparent medical histories.

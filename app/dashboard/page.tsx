@@ -53,10 +53,10 @@ export default async function Dashboard() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex shrink-0 items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-700 text-xl font-bold text-white shadow-sm">
-              H
+              vC
             </span>
             <span className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
-              Health<span className="text-teal-700">Trail</span>
+              VCare<span className="text-teal-700">Med</span>
             </span>
           </Link>
 
