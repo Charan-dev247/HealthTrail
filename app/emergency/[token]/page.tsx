@@ -36,7 +36,7 @@ export default async function EmergencyPage({ params }: { params: Promise<{ toke
     <main className="min-h-screen bg-red-50 p-4">
       <div className="max-w-md mx-auto space-y-4">
         <div className="bg-red-600 text-white rounded-lg p-4">
-          <p className="text-xs uppercase tracking-wide">HealthTrail · Emergency summary</p>
+          <p className="text-xs uppercase tracking-wide">VCareMed · Emergency summary</p>
           <h1 className="text-2xl font-bold">{profile.full_name}</h1>
           <p>DOB {profile.dob ?? "—"}</p>
           <p className="text-3xl font-bold mt-2">Blood group {profile.blood_group ?? "—"}</p>

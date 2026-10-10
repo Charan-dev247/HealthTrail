@@ -57,7 +57,7 @@ export default function DoctorView() {
           onSubmit={(e) => { e.preventDefault(); load(); }}
           className="w-full max-w-sm bg-white p-6 rounded-xl shadow space-y-4"
         >
-          <h1 className="text-2xl font-bold text-teal-700">HealthTrail</h1>
+          <h1 className="text-2xl font-bold text-teal-700">VCareMed</h1>
           <p className="text-sm text-slate-600">
             A patient has shared part of their medical record with you. Please identify yourself. This access is logged.
           </p>
@@ -82,7 +82,7 @@ export default function DoctorView() {
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="bg-white border-b px-6 py-3 flex flex-wrap items-center justify-between gap-2">
-        <span className="text-xl font-bold text-teal-700">HealthTrail · Doctor view</span>
+        <span className="text-xl font-bold text-teal-700">VCareMed · Doctor view</span>
         <span className="text-xs text-slate-500">
           Shared: {data.scopes.join(", ")} · Access expires {fmtTime(data.expiresAt)}
         </span>

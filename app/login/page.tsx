@@ -162,7 +162,7 @@ function LoginForm() {
           </div>
 
           <p className="text-center text-sm text-slate-500">
-            {mode === "signin" ? "New to HealthTrail?" : "Already have an account?"}{" "}
+            {mode === "signin" ? "New to VCareMed?" : "Already have an account?"}{" "}
             <button
               type="button"
               className="font-semibold text-teal-700 underline-offset-4 transition hover:text-teal-900 hover:underline"

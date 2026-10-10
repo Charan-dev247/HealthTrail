@@ -1,9 +1,9 @@
-# HealthTrail — Your medical history, version-controlled
+# VCareMed — Your medical history, version-controlled
 
-> HealthTrail doesn't just store medical records. It shows **what changed**, **what the next doctor needs to know**, and **exactly who was allowed to see it**.
+> VCareMed doesn't just store medical records. It shows **what changed**, **what the next doctor needs to know**, and **exactly who was allowed to see it**.
 
 **Live demo:** TODO: https://health-trail-b9v51s9hj-charan-2d53.vercel.app/
-**Demo video:** TODO: link (or `/demo/healthtrail-demo.mp4` in this repo)
+**Demo video:** TODO: link (or `/demo/VCareMed-demo.mp4` in this repo)
 **Demo login:** `ravi@test.com` / `ravi123`
 
 **Domain:** HealthTech
@@ -21,7 +21,7 @@ Patients with long-term conditions such as diabetes or hypertension see many doc
 - In an emergency, critical information like allergies is unavailable.
 
 ## Our solution
-HealthTrail treats a patient's medical history like **version-controlled code**:
+VCareMed treats a patient's medical history like **version-controlled code**:
 
 - Every prescription, lab result, diagnosis and visit is an **immutable entry** with a date, doctor and source.
 - A dose change never overwrites the old dose. The old medicine entry is ended and a new one starts, so the **exact medicine list on any past date can be reconstructed**.
@@ -121,8 +121,8 @@ Browser (Next.js pages)
 
 ## Run locally
 ```bash
-git clone https://github.com/Charan-dev247/HealthTrail.git
-cd HealthTrail
+git clone https://github.com/Charan-dev247/VCareMed.git
+cd VCareMed
 npm install
 ```
 

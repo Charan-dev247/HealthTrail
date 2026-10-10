@@ -65,7 +65,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
-              HealthTrail doesn&apos;t just store medical records. It shows what
+              VCareMed doesn&apos;t just store medical records. It shows what
               changed, what the next doctor needs to know, and exactly who was
               allowed to see it.
             </p>

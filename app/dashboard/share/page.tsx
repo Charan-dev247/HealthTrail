@@ -28,7 +28,7 @@ export default async function SharePage() {
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="bg-white border-b px-6 py-3">
-        <Link href="/dashboard" className="text-xl font-bold text-teal-700">← HealthTrail</Link>
+        <Link href="/dashboard" className="text-xl font-bold text-teal-700">← VCareMed</Link>
       </header>
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         <ShareForm />

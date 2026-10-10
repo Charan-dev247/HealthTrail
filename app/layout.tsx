@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HealthTrail — version-controlled medical history",
+  title: "VCareMed — version-controlled medical history",
   description:
     "See what changed since the last visit, share scoped records securely, and keep a full audit trail.",
 };
