@@ -2,7 +2,7 @@
 
 > HealthTrail doesn't just store medical records. It shows **what changed**, **what the next doctor needs to know**, and **exactly who was allowed to see it**.
 
-**Live demo:** TODO: https://health-trail-xxxx.vercel.app
+**Live demo:** TODO: https://health-trail-b9v51s9hj-charan-2d53.vercel.app/
 **Demo video:** TODO: link (or `/demo/healthtrail-demo.mp4` in this repo)
 **Demo login:** `ravi@test.com` / `ravi123`
 
