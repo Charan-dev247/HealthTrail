@@ -245,14 +245,11 @@ export default function Home() {
         <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-slate-900 shadow-xl">
           <div className="grid gap-8 p-7 sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:p-12">
             <div>
-              <span className="inline-flex rounded-full border border-teal-400/30 bg-teal-400/10 px-3 py-1 text-xs font-semibold text-teal-300">
-                HACKATHON DEMO
-              </span>
               <h2 className="mt-4 text-2xl font-bold tracking-tight text-white sm:text-3xl">
                 Take HealthTrail for a test drive.
               </h2>
               <p className="mt-3 max-w-xl leading-7 text-slate-300">
-                Explore the prototype using the demo patient account and see
+                Explore the platform using the demo patient account and see
                 how medical history and controlled sharing work.
               </p>
 
@@ -295,11 +292,11 @@ export default function Home() {
               Health<span className="text-teal-700">Trail</span>
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              A prototype for clearer, more transparent medical histories.
+              A platform for clearer, more transparent medical histories.
             </p>
           </div>
           <p className="max-w-2xl text-xs leading-6 text-slate-500 sm:text-right">
-            Prototype built for a hackathon. All patient data is simulated.
+            All patient data is simulated.
             Safety checks and review intervals are illustrative, not clinical
             advice. Clinician identity is self-reported and not verified.
           </p>
