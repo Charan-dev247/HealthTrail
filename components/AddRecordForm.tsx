@@ -1,4 +1,6 @@
+
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -8,7 +10,8 @@ type MedRow = { brand_name: string; generic_name: string; dose: string; frequenc
 type CurrentMed = { id: string; generic_name: string; dose: string | null; brand_name: string | null };
 
 const emptyMed = (): MedRow => ({ brand_name: "", generic_name: "", dose: "", frequency: "" });
-const input = "border rounded p-2 text-slate-800 w-full";
+
+const input = "w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10";
 
 export default function AddRecordForm({ userId, currentMeds, allergies, rules }: {
   userId: string;
@@ -69,7 +72,7 @@ export default function AddRecordForm({ userId, currentMeds, allergies, rules }:
     try {
       let file_path: string | null = null;
       if (file) {
-        const path = `${userId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const path = `${userId}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\_-]/g, "_")}`;
         const { error } = await supabase.storage.from(process.env.NEXT_PUBLIC_STORAGE_BUCKET!).upload(path, file);
         if (error) throw error;
         file_path = path;
@@ -131,106 +134,182 @@ export default function AddRecordForm({ userId, currentMeds, allergies, rules }:
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className="w-full bg-teal-600 text-white rounded-lg p-3 font-medium mb-4">
-        + Add record
+      <button
+        onClick={() => setOpen(true)}
+        className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 py-3.5 font-semibold text-white shadow-md shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+      >
+        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 text-lg">+</span>
+        Add record
       </button>
     );
   }
 
   const warnColor = {
-    allergy: "bg-red-50 text-red-800 border-red-300",
-    interaction: "bg-amber-50 text-amber-900 border-amber-300",
-    duplicate: "bg-blue-50 text-blue-900 border-blue-300",
+    allergy: "border-red-200 bg-red-50 text-red-900",
+    interaction: "border-amber-200 bg-amber-50 text-amber-900",
+    duplicate: "border-blue-200 bg-blue-50 text-blue-900",
   };
 
   return (
-    <form onSubmit={submit} className="bg-white rounded-lg p-5 shadow-sm space-y-3 mb-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-bold text-slate-800">Add record</h3>
-        <button type="button" onClick={() => { reset(); setOpen(false); }} className="text-sm text-slate-500">Cancel</button>
+    <form onSubmit={submit} className="mb-6 space-y-6 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
+      <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">Medical history</span>
+          <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-900">Add record</h3>
+          <p className="mt-1 text-sm leading-6 text-slate-500">Enter the details of a medical event.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => { reset(); setOpen(false); }}
+          className="shrink-0 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
+        >
+          Cancel
+        </button>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-2">
-        <select className={input} value={type} onChange={e => { setType(e.target.value); setWarnings(null); }}>
-          <option value="prescription">Prescription</option>
-          <option value="lab">Lab result</option>
-          <option value="diagnosis">Diagnosis</option>
-          <option value="visit">Visit</option>
-          <option value="scan">Scan / report</option>
-        </select>
-        <select className={input} value={category} onChange={e => setCategory(e.target.value)}>
-          <option value="general">General</option>
-          <option value="diabetes">Diabetes</option>
-          <option value="cardiac">Heart / BP</option>
-          <option value="mental">Mental health</option>
-        </select>
-        <input className={input} type="date" value={date} onChange={e => setDate(e.target.value)} required />
+      <div className="space-y-2">
+        <p className="text-sm font-semibold text-slate-800">Record details</p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <select aria-label="Record type" className={input} value={type} onChange={e => { setType(e.target.value); setWarnings(null); }}>
+            <option value="prescription">Prescription</option>
+            <option value="lab">Lab result</option>
+            <option value="diagnosis">Diagnosis</option>
+            <option value="visit">Visit</option>
+            <option value="scan">Scan / report</option>
+          </select>
+          <select aria-label="Category" className={input} value={category} onChange={e => setCategory(e.target.value)}>
+            <option value="general">General</option>
+            <option value="diabetes">Diabetes</option>
+            <option value="cardiac">Heart / BP</option>
+            <option value="mental">Mental health</option>
+          </select>
+          <input aria-label="Event date" className={input} type="date" value={date} onChange={e => setDate(e.target.value)} required />
+        </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-2">
-        <input className={input} placeholder="Doctor" value={doctor} onChange={e => setDoctor(e.target.value)} />
-        <input className={input} placeholder="Clinic / lab" value={provider} onChange={e => setProvider(e.target.value)} />
+      <div className="space-y-3">
+        <p className="text-sm font-semibold text-slate-800">Healthcare provider</p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <input aria-label="Doctor" className={input} placeholder="Doctor name" value={doctor} onChange={e => setDoctor(e.target.value)} />
+          <input aria-label="Clinic or lab" className={input} placeholder="Clinic / lab name" value={provider} onChange={e => setProvider(e.target.value)} />
+        </div>
+        <input aria-label="Record title" className={input} placeholder="Title (optional, auto-filled if empty)" value={title} onChange={e => setTitle(e.target.value)} />
       </div>
-      <input className={input} placeholder="Title (optional, auto-filled if empty)" value={title} onChange={e => setTitle(e.target.value)} />
 
       {type === "prescription" && (
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700">Medicines</p>
+        <div className="space-y-4 rounded-2xl border border-blue-100 bg-blue-50/40 p-4 sm:p-5">
+          <div>
+            <h4 className="font-bold text-slate-900">Medicines</h4>
+            <p className="mt-1 text-sm leading-6 text-slate-500">Enter the medicine details as prescribed.</p>
+          </div>
           {meds.map((m, i) => (
-            <div key={i} className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <input className={input} placeholder="Brand (e.g. Glycomet)" value={m.brand_name} onChange={e => updateMed(i, "brand_name", e.target.value)} />
-              <input className={input} placeholder="Generic" value={m.generic_name} onChange={e => updateMed(i, "generic_name", e.target.value)} />
-              <input className={input} placeholder="Dose (500 mg)" value={m.dose} onChange={e => updateMed(i, "dose", e.target.value)} />
-              <input className={input} placeholder="Frequency" value={m.frequency} onChange={e => updateMed(i, "frequency", e.target.value)} />
+            <div key={i} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <input aria-label={`Medicine ${i + 1} brand`} className={input} placeholder="Brand (e.g. Glycomet)" value={m.brand_name} onChange={e => updateMed(i, "brand_name", e.target.value)} />
+              <input aria-label={`Medicine ${i + 1} generic name`} className={input} placeholder="Generic name" value={m.generic_name} onChange={e => updateMed(i, "generic_name", e.target.value)} />
+              <input aria-label={`Medicine ${i + 1} dose`} className={input} placeholder="Dose (e.g. 500 mg)" value={m.dose} onChange={e => updateMed(i, "dose", e.target.value)} />
+              <input aria-label={`Medicine ${i + 1} frequency`} className={input} placeholder="Frequency" value={m.frequency} onChange={e => updateMed(i, "frequency", e.target.value)} />
             </div>
           ))}
-          <button type="button" onClick={() => setMeds([...meds, emptyMed()])} className="text-sm text-teal-700">+ another medicine</button>
+          <button
+            type="button"
+            onClick={() => setMeds([...meds, emptyMed()])}
+            className="inline-flex items-center gap-2 rounded-lg border border-teal-200 bg-white px-3 py-2 text-sm font-semibold text-teal-800 transition hover:bg-teal-50"
+          >
+            <span className="text-lg">+</span> Add another medicine
+          </button>
         </div>
       )}
 
       {type === "lab" && (
-        <div className="grid grid-cols-3 gap-2">
-          <select className={input} value={lab.test_code} onChange={e => setLab({ ...lab, test_code: e.target.value })}>
-            {rules.map(r => <option key={r.test_code} value={r.test_code}>{r.test_name}</option>)}
-          </select>
-          <input className={input} placeholder="Value" value={lab.value} onChange={e => setLab({ ...lab, value: e.target.value })} />
-          <input className={input} placeholder="Unit" value={lab.unit} onChange={e => setLab({ ...lab, unit: e.target.value })} />
+        <div className="space-y-3 rounded-2xl border border-violet-100 bg-violet-50/40 p-4 sm:p-5">
+          <div>
+            <h4 className="font-bold text-slate-900">Lab result</h4>
+            <p className="mt-1 text-sm text-slate-500">Select the test and enter its result.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <select aria-label="Lab test" className={input} value={lab.test_code} onChange={e => setLab({ ...lab, test_code: e.target.value })}>
+              {rules.map(r => <option key={r.test_code} value={r.test_code}>{r.test_name}</option>)}
+            </select>
+            <input aria-label="Lab value" className={input} placeholder="Value" value={lab.value} onChange={e => setLab({ ...lab, value: e.target.value })} />
+            <input aria-label="Lab unit" className={input} placeholder="Unit" value={lab.unit} onChange={e => setLab({ ...lab, unit: e.target.value })} />
+          </div>
         </div>
       )}
 
       {type === "diagnosis" && (
-        <input className={input} placeholder="Condition (e.g. Asthma)" value={condition} onChange={e => setCondition(e.target.value)} required />
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-slate-800" htmlFor="condition">Condition</label>
+          <input id="condition" className={input} placeholder="Condition (e.g. Asthma)" value={condition} onChange={e => setCondition(e.target.value)} required />
+        </div>
       )}
 
-      <textarea className={input} placeholder="Notes" rows={2} value={notes} onChange={e => setNotes(e.target.value)} />
-      <div>
-        <label className="text-sm text-slate-700">Attach report (PDF / image, optional)</label>
-        <input type="file" accept="application/pdf,image/*" className="block text-sm text-slate-700 mt-1"
-          onChange={e => setFile(e.target.files?.[0] ?? null)} />
+      <div className="space-y-2">
+        <label className="block text-sm font-semibold text-slate-800" htmlFor="record-notes">Notes</label>
+        <textarea id="record-notes" className={`${input} resize-y`} placeholder="Add any relevant details..." rows={3} value={notes} onChange={e => setNotes(e.target.value)} />
+      </div>
+
+      <div className="space-y-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4">
+        <label className="block text-sm font-semibold text-slate-800">Attach report</label>
+        <p className="text-xs leading-5 text-slate-500">PDF or image · Optional</p>
+        <input
+          type="file"
+          accept="application/pdf,image/*"
+          className="block w-full min-w-0 text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-teal-50 file:px-3 file:py-2 file:font-semibold file:text-teal-800 hover:file:bg-teal-100"
+          onChange={e => setFile(e.target.files?.[0] ?? null)}
+        />
       </div>
 
       {warnings && warnings.length > 0 && (
-        <div className="space-y-2">
-          <p className="font-semibold text-slate-800">Please review before saving</p>
+        <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div>
+            <h4 className="font-bold text-slate-900">Please review before saving</h4>
+            <p className="mt-1 text-sm leading-6 text-slate-600">One or more safety checks need your attention.</p>
+          </div>
           {warnings.map((w, i) => (
-            <div key={i} className={`border rounded p-2 text-sm ${warnColor[w.kind]}`}>
-              <b className="uppercase">{w.kind}</b> · {w.message}
+            <div key={i} className={`rounded-xl border p-3 text-sm leading-6 ${warnColor[w.kind]}`}>
+              <p>
+                <b className="mr-1 text-xs uppercase tracking-wide">{w.kind}</b>
+                <span aria-hidden="true">·</span> {w.message}
+              </p>
               {w.kind === "duplicate" && (
-                <label className="flex items-center gap-2 mt-1">
-                  <input type="checkbox" checked={endPrevious} onChange={e => setEndPrevious(e.target.checked)} />
-                  Record as a change: end the previous entry on this date (history is kept)
+                <label className="mt-3 flex items-start gap-3 rounded-lg bg-white/70 p-3">
+                  <input
+                    type="checkbox"
+                    className="mt-1 h-4 w-4 shrink-0 accent-teal-700"
+                    checked={endPrevious}
+                    onChange={e => setEndPrevious(e.target.checked)}
+                  />
+                  <span>Record as a change: end the previous entry on this date (history is kept).</span>
                 </label>
               )}
             </div>
           ))}
-          <p className="text-xs text-slate-500">Illustrative checks against a small demo dataset, not clinical advice.</p>
+          <p className="text-xs leading-5 text-slate-500">Illustrative checks against a small demo dataset, not clinical advice.</p>
         </div>
       )}
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
-      <button disabled={saving} className="bg-teal-600 text-white rounded px-4 py-2 disabled:opacity-50">
-        {saving ? "Saving..." : warnings?.length ? "Save anyway" : "Save record"}
-      </button>
+      {error && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
+          {error}
+        </p>
+      )}
+
+      <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          type="button"
+          onClick={() => { reset(); setOpen(false); }}
+          className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+        >
+          Cancel
+        </button>
+        <button
+          disabled={saving}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-700 px-6 py-3 font-semibold text-white shadow-md shadow-teal-900/10 transition hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {saving ? "Saving..." : warnings?.length ? "Save anyway" : "Save record"}
+          {!saving && <span aria-hidden="true">→</span>}
+        </button>
+      </div>
     </form>
   );
 }
