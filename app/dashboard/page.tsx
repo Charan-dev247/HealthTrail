@@ -28,7 +28,7 @@ export default async function Dashboard() {
     supabase.from("test_review_rules").select("test_code, test_name").order("test_name"),
   ]);
 
-    // Short-lived signed links for attached files (bucket is private)
+  // Short-lived signed links for attached files (bucket is private)
   const paths = (events ?? []).filter(e => e.file_path).map(e => e.file_path as string);
   const fileUrls: Record<string, string> = {};
   if (paths.length) {
@@ -39,10 +39,11 @@ export default async function Dashboard() {
       if (s.path && s.signedUrl) fileUrls[s.path] = s.signedUrl;
     }
   }
+
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="bg-white border-b px-6 py-3 flex items-center justify-between">
-        <span className="text-xl font-bold text-teal-700">HealthTrail</span>
+        <Link href="/" className="text-xl font-bold text-teal-700">HealthTrail</Link>
         <div className="flex items-center gap-3">
           <Link href="/dashboard/share" className="text-sm bg-teal-600 text-white rounded px-3 py-1">Share with a doctor</Link>
           <SignOutButton />
@@ -74,18 +75,19 @@ export default async function Dashboard() {
 
           <section className="bg-white rounded-lg p-4 shadow-sm">
             <h3 className="font-semibold text-slate-800 mb-1">Conditions</h3>
-            {conditions?.map(c => (
+            {conditions?.length ? conditions.map(c => (
               <p key={c.id} className="text-sm text-slate-700">{c.name} <span className="text-slate-400">since {c.diagnosed_on}</span></p>
-            ))}
+            )) : <p className="text-sm text-slate-500">None recorded</p>}
           </section>
 
           <section className="bg-white rounded-lg p-4 shadow-sm">
             <h3 className="font-semibold text-slate-800 mb-1">Current medicines</h3>
-            {meds?.map(m => (
+            {meds?.length ? meds.map(m => (
               <p key={m.id} className="text-sm text-slate-700">
-                <b>{m.generic_name}</b> {m.dose}, {m.frequency} <span className="text-slate-400">({m.brand_name})</span>
+                <b>{m.generic_name}</b> {m.dose}{m.frequency ? `, ${m.frequency}` : ""}{" "}
+                {m.brand_name && <span className="text-slate-400">({m.brand_name})</span>}
               </p>
-            ))}
+            )) : <p className="text-sm text-slate-500">None recorded</p>}
           </section>
 
           <EmergencyQR token={profile?.emergency_token} />
@@ -99,7 +101,7 @@ export default async function Dashboard() {
             rules={rules ?? []}
           />
           <h2 className="text-lg font-bold text-slate-800 mb-4">Health timeline</h2>
-          <Timeline events={events ?? []} fileUrls={fileUrls} />
+          <Timeline events={events ?? []} fileUrls={fileUrls} canCorrect />
         </section>
       </div>
     </main>

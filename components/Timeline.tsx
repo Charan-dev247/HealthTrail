@@ -1,3 +1,5 @@
+import CorrectEntry from "@/components/CorrectEntry";
+
 type Event = {
   id: string; type: string; category: string; title: string;
   doctor_name: string | null; provider: string | null;
@@ -12,7 +14,9 @@ const badge: Record<string, string> = {
   scan: "bg-slate-200 text-slate-700",
 };
 
-export default function Timeline({ events, fileUrls = {} }: { events: Event[]; fileUrls?: Record<string, string> }) {
+export default function Timeline({ events, fileUrls = {}, canCorrect = false }: {
+  events: Event[]; fileUrls?: Record<string, string>; canCorrect?: boolean;
+}) {
   const supersededIds = new Set(events.map(e => e.supersedes_id).filter(Boolean));
 
   return (
@@ -41,6 +45,7 @@ export default function Timeline({ events, fileUrls = {} }: { events: Event[]; f
                   📎 View attached report (link valid 5 min)
                 </a>
               )}
+              {canCorrect && !superseded && <CorrectEntry event={e} />}
             </div>
           </li>
         );
