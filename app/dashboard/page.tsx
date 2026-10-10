@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Timeline from "@/components/Timeline";
 import SignOutButton from "@/components/SignOutButton";
+import EmergencyQR from "@/components/EmergencyQR";
 
 export default async function Dashboard() {
   await connection();
@@ -11,14 +12,23 @@ export default async function Dashboard() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: events }, { data: meds }, { data: conditions }, { data: allergies }] =
-    await Promise.all([
-      supabase.from("profiles").select("*").eq("id", user.id).single(),
-      supabase.from("events").select("*").order("event_date", { ascending: false }).order("created_at", { ascending: false }),
-      supabase.from("medications").select("*").is("end_date", null).order("start_date"),
-      supabase.from("conditions").select("*").order("diagnosed_on"),
-      supabase.from("allergies").select("*"),
-    ]);
+  const [
+    { data: profile },
+    { data: events },
+    { data: meds },
+    { data: conditions },
+    { data: allergies },
+    { data: emergencyLogs },
+  ] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("events").select("*").order("event_date", { ascending: false }).order("created_at", { ascending: false }),
+    supabase.from("medications").select("*").is("end_date", null).order("start_date"),
+    supabase.from("conditions").select("*").order("diagnosed_on"),
+    supabase.from("allergies").select("*"),
+    supabase.from("access_logs").select("accessed_at, access_type")
+      .in("access_type", ["emergency_basic", "break_glass"])
+      .order("accessed_at", { ascending: false }).limit(1),
+  ]);
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -29,6 +39,14 @@ export default async function Dashboard() {
           <SignOutButton />
         </div>
       </header>
+
+      {emergencyLogs?.[0] && (
+        <div className="bg-red-600 text-white px-6 py-2 text-sm">
+          ⚠ Your emergency card was accessed on{" "}
+          {new Date(emergencyLogs[0].accessed_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "medium", timeStyle: "short" })}.{" "}
+          <Link href="/dashboard/share" className="underline">See access log</Link>
+        </div>
+      )}
 
       <div className="max-w-5xl mx-auto p-6 grid md:grid-cols-3 gap-6">
         {/* Left: profile summary */}
@@ -61,6 +79,8 @@ export default async function Dashboard() {
               </p>
             ))}
           </section>
+
+          <EmergencyQR token={profile?.emergency_token} />
         </aside>
 
         {/* Right: timeline */}
